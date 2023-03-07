@@ -1,5 +1,5 @@
 import { Html, useProgress } from '@react-three/drei';
-import PacmanLoader from 'react-spinners/PacmanLoader';
+// import PacmanLoader from 'react-spinners/PacmanLoader';
 
 const CanvasLoader = () => {
   const { progress } = useProgress();
@@ -17,7 +17,7 @@ const CanvasLoader = () => {
       >
         {progress.toFixed(2)}%
       </p>
-      <PacmanLoader color="white" size={30} />
+      {/* <PacmanLoader color="white" size={30} /> */}
     </Html>
   );
 };
