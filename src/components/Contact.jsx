@@ -9,9 +9,7 @@ import { SectionWrapper } from '../hoc';
 
 import { slideIn } from '../utils/motion';
 
-// template_s23w5uf
-// service_d27joxw
-// Z_2yk4B8Z8Sa-A9Zp
+import toast from 'react-hot-toast';
 
 const Contact = () => {
   const formRef = useRef();
@@ -29,14 +27,60 @@ const Contact = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
 
-    emailjs
-      .send(
-        'service_d27joxw',
-        'template_s23w5uf',
+    const notification = toast.loading('Sending your message...');
+
+    // emailjs
+    //   .send(
+    //     'service_d27joxw',
+    //     'template_s23w5uf',
+    //     {
+    //       from_name: form.name,
+    //       to_name: 'Jimmy',
+    //       from_email: form.email,
+    //       to_email: 'ylchan@uci.edu',
+    //       message: form.message,
+    //     },
+    //     'Z_2yk4B8Z8Sa-A9Zp'
+    //   )
+    //   .then(
+    //     () => {
+    //       setLoading(false);
+    //       // alert('Thank you. I will get back to you as soon as possible.');
+
+    //       toast.success(
+    //         'Your message has been sent!\nI will keep in touch with you :)',
+    //         {
+    //           id: notification,
+    //         }
+    //       );
+
+    //       setForm({
+    //         name: '',
+    //         email: '',
+    //         message: '',
+    //       });
+    //     },
+    //     (error) => {
+    //       setLoading(false);
+    //       console.error(error);
+
+    //       // alert('Ahh, something went wrong. Please try again.');
+
+    //       toast.error('Oops, something went wrong!', {
+    //         id: notification,
+    //       });
+    //     }
+    //   );
+
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
         {
           from_name: form.name,
           to_name: 'Jimmy',
@@ -44,26 +88,28 @@ const Contact = () => {
           to_email: 'ylchan@uci.edu',
           message: form.message,
         },
-        'Z_2yk4B8Z8Sa-A9Zp'
-      )
-      .then(
-        () => {
-          setLoading(false);
-          alert('Thank you. I will get back to you as soon as possible.');
-
-          setForm({
-            name: '',
-            email: '',
-            message: '',
-          });
-        },
-        (error) => {
-          setLoading(false);
-
-          console.log(error);
-          alert('Something went wrong');
+        import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
+      );
+      setLoading(false);
+      toast.success(
+        'Thank you for your message.\nI will get back to you as soon as possible 🙂',
+        {
+          id: notification,
         }
       );
+
+      setForm({
+        name: '',
+        email: '',
+        message: '',
+      });
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      toast.error('Oops, something went wrong!', {
+        id: notification,
+      });
+    }
   };
 
   return (
@@ -86,6 +132,7 @@ const Contact = () => {
               type="text"
               name="name"
               value={form.name}
+              required
               onChange={handleChange}
               placeholder="What's your name?"
               className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
@@ -97,6 +144,7 @@ const Contact = () => {
             <input
               type="email"
               name="email"
+              required
               value={form.email}
               onChange={handleChange}
               placeholder="What's your email?"
@@ -108,6 +156,7 @@ const Contact = () => {
             <spam className="text-white font-medium mb-4">Your Message</spam>
             <textarea
               rows={7}
+              required
               name="message"
               value={form.message}
               onChange={handleChange}
